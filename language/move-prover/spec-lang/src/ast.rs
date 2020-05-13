@@ -84,14 +84,14 @@ impl ConditionKind {
         use ConditionKind::*;
         matches!(
             self,
-            Requires | RequiresModule | AbortsIf | Ensures | VarUpdate(..)
+            Requires | RequiresModule | AbortsIf | Ensures
         )
     }
 
     /// Returns true if this condition is allowed on a private function declaration.
     pub fn allowed_on_private_fun_decl(&self) -> bool {
         use ConditionKind::*;
-        matches!(self, Requires | AbortsIf | Ensures | VarUpdate(..))
+        matches!(self, Requires | AbortsIf | Ensures)
     }
 
     /// Returns true if this condition is allowed in a function body.
@@ -105,7 +105,7 @@ impl ConditionKind {
         use ConditionKind::*;
         matches!(
             self,
-            Invariant | InvariantUpdate | VarUpdate(..) | VarPack(..) | VarUnpack(..)
+            Invariant | VarPack(..) | VarUnpack(..)
         )
     }
 
