@@ -13,7 +13,7 @@ use executor_types::ExecutedTrees;
 use futures::{executor::block_on, StreamExt};
 use libra_config::{
     chain_id::ChainId,
-    config::RoleType,
+    config::{GossipConfig, RoleType},
     network_id::{NetworkContext, NetworkId},
 };
 use libra_crypto::{hash::ACCUMULATOR_PLACEHOLDER_HASH, test_utils::TEST_SEED, x25519, Uniform};
@@ -309,7 +309,13 @@ impl SynchronizerEnv {
                 .seed_addrs(seed_addrs)
                 .seed_pubkeys(seed_pubkeys)
                 .add_connectivity_manager()
-                .add_gossip_discovery(addr, constants::DISCOVERY_INTERVAL_MS, pub_key);
+                .add_gossip_discovery(
+                    GossipConfig {
+                        advertised_address: addr,
+                        discovery_interval_ms: constants::DISCOVERY_INTERVAL_MS,
+                    },
+                    pub_key,
+                );
 
             let (sender, events) =
                 network_builder.add_protocol_handler(crate::network::network_endpoint_config());
