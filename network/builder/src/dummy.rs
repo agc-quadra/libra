@@ -16,7 +16,7 @@ use libra_metrics::IntCounterVec;
 use libra_network_address::NetworkAddress;
 use libra_types::PeerId;
 use network::{
-    constants::NETWORK_CHANNEL_SIZE,
+    constants,
     error::NetworkError,
     peer_manager::{
         builder::AuthenticationMode, ConnectionRequestSender, PeerManagerRequestSender,
@@ -53,7 +53,7 @@ pub fn network_endpoint_config() -> (
         vec![TEST_RPC_PROTOCOL],
         vec![TEST_DIRECT_SEND_PROTOCOL],
         QueueStyle::LIFO,
-        NETWORK_CHANNEL_SIZE,
+        constants::NETWORK_CHANNEL_SIZE,
         None,
     )
 }
@@ -153,7 +153,14 @@ pub fn setup_network() -> DummyNetwork {
         listener_addr,
         authentication_mode,
     );
-    network_builder.add_connectivity_manager(HashMap::new(), seed_pubkeys.clone());
+    network_builder.add_connectivity_manager(
+        HashMap::new(),
+        seed_pubkeys.clone(),
+        constants::MAX_FULLNODE_CONNECTIONS,
+        constants::MAX_CONNECTION_DELAY_MS,
+        constants::CONNECTIVITY_CHECK_INTERNAL_MS,
+        constants::NETWORK_CHANNEL_SIZE,
+    );
     let (listener_sender, mut listener_events) = network_builder
         .add_protocol_handler::<DummyNetworkSender, DummyNetworkEvents>(network_endpoint_config());
     network_builder.build();
@@ -179,7 +186,14 @@ pub fn setup_network() -> DummyNetwork {
         dialer_addr,
         authentication_mode,
     );
-    network_builder.add_connectivity_manager(seed_addrs, seed_pubkeys);
+    network_builder.add_connectivity_manager(
+        seed_addrs,
+        seed_pubkeys,
+        constants::MAX_FULLNODE_CONNECTIONS,
+        constants::MAX_CONNECTION_DELAY_MS,
+        constants::CONNECTIVITY_CHECK_INTERNAL_MS,
+        constants::NETWORK_CHANNEL_SIZE,
+    );
     let (dialer_sender, mut dialer_events) = network_builder
         .add_protocol_handler::<DummyNetworkSender, DummyNetworkEvents>(network_endpoint_config());
     network_builder.build();
