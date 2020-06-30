@@ -153,9 +153,7 @@ pub fn setup_network() -> DummyNetwork {
         listener_addr,
         authentication_mode,
     );
-    network_builder
-        .seed_pubkeys(seed_pubkeys.clone())
-        .add_connectivity_manager();
+    network_builder.add_connectivity_manager(HashMap::new(), seed_pubkeys.clone());
     let (listener_sender, mut listener_events) = network_builder
         .add_protocol_handler::<DummyNetworkSender, DummyNetworkEvents>(network_endpoint_config());
     network_builder.build();
@@ -181,10 +179,7 @@ pub fn setup_network() -> DummyNetwork {
         dialer_addr,
         authentication_mode,
     );
-    network_builder
-        .seed_addrs(seed_addrs)
-        .seed_pubkeys(seed_pubkeys)
-        .add_connectivity_manager();
+    network_builder.add_connectivity_manager(seed_addrs, seed_pubkeys);
     let (dialer_sender, mut dialer_events) = network_builder
         .add_protocol_handler::<DummyNetworkSender, DummyNetworkEvents>(network_endpoint_config());
     network_builder.build();

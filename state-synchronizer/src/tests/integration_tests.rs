@@ -309,9 +309,7 @@ impl SynchronizerEnv {
                 authentication_mode,
             );
             network_builder
-                .seed_addrs(seed_addrs)
-                .seed_pubkeys(seed_pubkeys)
-                .add_connectivity_manager()
+                .add_connectivity_manager(seed_addrs, seed_pubkeys)
                 .add_gossip_discovery(
                     GossipConfig {
                         advertised_address: addr,
